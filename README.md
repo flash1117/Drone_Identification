@@ -44,13 +44,14 @@
 
 ## TLD Algorithm
 
-OpenCV에서 제공하는 MeanShift, CamShift는 드론을 추적하기엔 색상 기반 탐지라서 오차율이 너무 심했다. 또한, 드론이 건물에 가려졌다가 다시 나타나는 등의 동작을 하여도 드론의 추적은 꾸준히 일어나야했다.
+OpenCV에서 제공하는 MeanShift, CamShift는 드론을 추적하기엔 색상 기반 탐지라서 오차율이 너무 심했기에 사용할 수 없었다. 또한, 드론이 건물에 가려졌다가 다시 나타나는 등의 동작을 하여도 드론의 추적은 꾸준히 일어나야했다.
 
 따라서 필요한 것은 드론이 멀어져서 크기나 형태 위치가 변해거나 잠깐 가려졌다 나타나도 꾸준히 추적할 수 있는 기능이 필요했으며 이를 위해 **TLD(Tracking-Learning-Detection)**알고리즘을 통해 추적기능을 구현하였다.
 
-이름에서 알 수 있듯이 장기 추적 작업을 **단기추적, 학습, 탐지**라는 **세 가지 구성 요소**로 분할 하는데. 내부적으로 tracker 와 detector를 동시에 운용한다. tracker는 동영상의 인접한 영상 프레임들 사이의 시간적, 공간적, 형태적 유사성을 추적 정보로 받아 들여 대상을 찾게 된다. 때문에 과거에 대상을 놓치면 연속성이 끊어져 다시 찾기 힘들다. 이를 보완하기 위해 detector를 사용하는데, detector 는 미리 알고 있는 대상을 입력 영상에서 찾을 수 있는 방법으로 이미지 한 장만 주어져도 대상을 찾을 수 있다.
+이름에서 알 수 있듯이 장기 추적 작업을 **단기추적, 학습, 탐지**라는 **세 가지 구성 요소**로 분할 하는데. 내부적으로 tracker 와 detector를 동시에 운용한다.
+tracker는 동영상의 인접한 영상 프레임들 사이의 시간적, 공간적, 형태적 유사성을 추적 정보로 받아 들여 대상을 찾게 된다. 때문에 과거에 대상을 놓치면 연속성이 끊어져 다시 찾기 힘들다. 이를 보완하기 위해 detector를 사용하는데, **detector 는 미리 알고 있는 대상을 입력 영상에서 찾을 수 있는 방법으로 이미지 한 장만 주어져도 대상을 찾을 수 있다.**
 
-TLD 알고리즘의 순서는 처음에 사용자가 추적할 ROI를 설정하면 tracker 와 detector 가 초기화 된다. 이 때 detector 의 경우 이미지 하나에 대해서 학습을 한다. 이후 입력 영상이 들어오면 tracker 와 detector 가 동시에 대상을 찾는다. 만약 tracker 가 추적에 성공했다면 tracker 가 찾은 이미지가 detector 의 학습 데이터로 활용되어서 detector를 좀 더 견고하게 만들어 준다. 또한 detector 가 찾은 영역 중 tracker와 결과가 일치 하지 않으면 잘못 인식 한 것으로 분류되어 그 또한 잘못 인식한 예로 학습을 하게 된다. 만약 tracker 가 추적에 실패했을 경우에는 detector가 성공 할 때 까지 대기하다가 detector가 성공하면 탐지한 위치로 tracker를 초기화 하고 추적을 이어 나간다.
+TLD 알고리즘의 순서는 처음에 사용자가 추적할 ROI를 설정하면 tracker 와 detector 가 초기화 된다. 이 때 detector 의 경우 이미지 하나에 대해서 학습을 한다. 이후 입력 영상이 들어오면 **tracker 와 detector 가 동시에 대상을 찾는다.** 만약 **tracker 가 추적에 성공**했다면 tracker 가 찾은 이미지가 detector 의 학습 데이터로 활용되어서 **detector를 좀 더 견고하게 만들어 준다.** 또한 detector 가 찾은 영역 중 tracker와 결과가 일치 하지 않으면 잘못 인식 한 것으로 분류되어 그 또한 잘못 인식한 예로 학습을 하게 된다. 만약 tracker 가 추적에 실패했을 경우에는 detector가 성공 할 때 까지 대기하다가 detector가 성공하면 탐지한 위치로 tracker를 초기화 하고 추적을 이어 나간다.
 
 ![image](https://user-images.githubusercontent.com/33343785/91632169-09a3cb00-ea1a-11ea-8022-75fcf4d64252.png)
 
@@ -61,6 +62,8 @@ TLD 알고리즘의 순서는 처음에 사용자가 추적할 ROI를 설정하�
 ![image](https://user-images.githubusercontent.com/33343785/91632187-2dffa780-ea1a-11ea-9ecf-dd1669c19c89.png)
 
 ## 조회
+
+![image](https://user-images.githubusercontent.com/33343785/91632342-107f0d80-ea1b-11ea-8ae8-d9d7594119dc.png)
 
 ![image](https://user-images.githubusercontent.com/33343785/91632200-3eb01d80-ea1a-11ea-8b98-01b435a7751a.png)
 
